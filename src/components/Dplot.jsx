@@ -758,8 +758,6 @@
 
 // //https://firebasestorage.googleapis.com/v0/b/gaitguru-backend.appspot.com/o/processed_videos%2Foutput_video.mp4?alt=media&token=429490ca-006a-499f-9116-98d726c47a00
 
-
-
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { getDownloadURL, uploadBytesResumable, ref, getStorage } from "firebase/storage";
@@ -793,7 +791,7 @@ function Dplot() {
   }, [auth]);
 
   useEffect(() => {
-    video && uploadFile(video);
+    if (video) uploadFile(video);
   }, [video]);
 
   const uploadFile = (file) => {
@@ -813,7 +811,6 @@ function Dplot() {
       (snapshot) => {
         const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
         setVideoPerc(Math.round(progress));
-        console.log(`Upload progress: ${Math.round(progress)}%`);
         setStreamedBytes(snapshot.bytesTransferred);
         setTotalBytes(snapshot.totalBytes);
         switch (snapshot.state) {
