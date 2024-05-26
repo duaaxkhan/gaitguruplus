@@ -123,7 +123,7 @@ function Main() {
 
 
 
-<div className="w-full md:h-[350px] sm:h-[200px] bg-[#edebe9] ">
+{/* <div className="w-full md:h-[350px] sm:h-[200px] bg-[#edebe9] ">
           <h1 className="text-center text-2xl pt-10">Key Offerings</h1>
           <Slider {...settings} className="pt-10 pb-10">
             {logos.map((logo, index) => (
@@ -133,7 +133,7 @@ function Main() {
               </div>
             ))}
           </Slider>
-        </div>
+        </div> */}
 </div>
 
 

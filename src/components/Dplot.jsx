@@ -757,12 +757,11 @@
 
 
 // //https://firebasestorage.googleapis.com/v0/b/gaitguru-backend.appspot.com/o/processed_videos%2Foutput_video.mp4?alt=media&token=429490ca-006a-499f-9116-98d726c47a00
-
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import { getDownloadURL, uploadBytesResumable, ref, getStorage } from "firebase/storage";
-import { getAuth, onAuthStateChanged, signInWithEmailAndPassword } from "firebase/auth";
-import app from '../firebase';
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { app, auth, storage } from '../firebase'; // Adjust the import as per your structure
 import Navbar from "./Navbar";
 import videoF from "../../src/pictures-olive/vi.mp4";
 import Newsletter from "./Newsletter.jsx";
@@ -776,7 +775,6 @@ function Dplot() {
   const [downloadedVideoURL, setDownloadedVideoURL] = useState("");
   const videoRef = useRef(null);
   const [user, setUser] = useState(null);
-  const auth = getAuth(app);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -788,7 +786,7 @@ function Dplot() {
     });
 
     return () => unsubscribe();
-  }, [auth]);
+  }, []);
 
   useEffect(() => {
     if (video) uploadFile(video);
@@ -800,7 +798,6 @@ function Dplot() {
       return;
     }
 
-    const storage = getStorage(app);
     const folder = "input_videos/";
     const fileName = new Date().getTime() + file.name;
     const storageRef = ref(storage, folder + fileName);
@@ -869,7 +866,6 @@ function Dplot() {
       console.log("Downloaded video URL:", url);
       setDownloadedVideoURL(url);
 
-      // Create a link element to trigger the download
       const link = document.createElement('a');
       link.href = url;
       link.setAttribute('download', 'downloaded_video.mp4');
@@ -930,14 +926,6 @@ function Dplot() {
           >
             Download and Play Processed Video
           </button>
-          <br />
-          {/* <div className="mt-10">
-            <video controls className="w-full h-auto" ref={videoRef}>
-              <source src={downloadedVideoURL}
-               type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
-          </div> */}
         </div>
         <Newsletter/>
       </div>
