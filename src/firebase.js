@@ -17,10 +17,11 @@
 
 // export default app;
 
+// firebase.js or firebaseConfig.js
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
+import { getStorage } from "firebase/storage";
 
-// Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyCTdKjIkF944O3LyAJxqgVk_noXSfl_ayg",
   authDomain: "gaitguru-aa584.firebaseapp.com",
@@ -33,5 +34,6 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const storage = getStorage(app);
 
-export { app, auth };
+export { app, auth, storage };
