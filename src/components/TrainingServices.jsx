@@ -346,7 +346,7 @@ function TrainingServices() {
   };
 
   return (
-    <div className="w-full mx-auto bg-black md:h-[1900px] sm:h-[200px] text-white justify-center items-center">
+    <div className="w-full mx-auto bg-black md:h-[2500px] sm:h-[200px] text-white justify-center items-center">
       <Navbar />
       <div className="bg-black w-full md:h-[1400px] sm:h-[800px] justify-center items-center">
         <h1 className="mt-10 mb-6 text-center text-3xl">Extracting Gait Info</h1>
@@ -379,7 +379,7 @@ function TrainingServices() {
           </div>
         </div>
 
-        <div className="flex flex-col justify-center items-center pt-20">
+        <div className="flex flex-col justify-center items-center pt-2">
           <button onClick={handleGetGaitParameter} className="px-4 py-4 bg-gray-800 text-white rounded-md">
             {isProcessing ? 'Processing...' : 'Get Gait Parameters'}
           </button>

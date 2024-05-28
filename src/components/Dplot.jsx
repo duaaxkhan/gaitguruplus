@@ -593,6 +593,163 @@
 
 
 
+// import React, { useState, useEffect, useRef } from "react";
+// import axios from "axios";
+// import { getDownloadURL, uploadBytesResumable, ref, getStorage } from "firebase/storage";
+// import app from '../firebase';
+// import Navbar from "./Navbar";
+// import videoF from "../../src/pictures-olive/vi.mp4";
+// import Newsletter from "./Newsletter.jsx";
+
+// function Dplot() {
+//   const [video, setVideo] = useState(undefined);
+//   const [videoPerc, setVideoPerc] = useState(0);
+//   const [inputs, setInputs] = useState({});
+//   const [streamedBytes, setStreamedBytes] = useState(0);
+//   const [totalBytes, setTotalBytes] = useState(0);
+//   const [downloadedVideoURL, setDownloadedVideoURL] = useState("");
+//   const videoRef = useRef(null);
+
+//   useEffect(() => {
+//     video && uploadFile(video);
+//   }, [video]);
+
+//   const uploadFile = (file) => {
+//     const storage = getStorage(app);
+//     const folder = "input_videos/";
+//     const fileName = new Date().getTime() + file.name;
+//     const storageRef = ref(storage, folder + fileName);
+//     const uploadTask = uploadBytesResumable(storageRef, file);
+
+//     uploadTask.on(
+//       "state_changed",
+//       (snapshot) => {
+//         const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+//         setVideoPerc(Math.round(progress));
+//         console.log(`Upload progress: ${Math.round(progress)}%`);
+//         setStreamedBytes(snapshot.bytesTransferred);
+//         setTotalBytes(snapshot.totalBytes);
+//         switch (snapshot.state) {
+//           case "paused":
+//             console.log("Upload is paused");
+//             break;
+//           case "running":
+//             console.log("Upload is running");
+//             break;
+//           default:
+//             break;
+//         }
+//       },
+//       (error) => {
+//         console.log("Upload error:", error);
+//       },
+//       () => {
+//         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+//           console.log('DownloadURL - ', downloadURL);
+//           setInputs((prev) => {
+//             return {
+//               ...prev,
+//               downloadURL,
+//             };
+//           });
+//         });
+//       }
+//     );
+//   };
+
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+//     try {
+//       await axios.post(`http://127.0.0.1:5000/api/videos`, { ...inputs });
+//       console.log('Video uploaded successfully');
+//     } catch (error) {
+//       console.log("Error uploading video:", error);
+//     }
+//   };
+
+//   const handleDownloadAndPlay = async () => {
+//     try {
+//       const response = await fetch('http://127.0.0.1:5000/api/download-video');
+
+//       if (!response.ok) {
+//         throw new Error('Failed to fetch video');
+//       }
+
+//       const blob = await response.blob();
+//       const url = window.URL.createObjectURL(blob);
+//       console.log("Downloaded video URL:", url);
+//       setDownloadedVideoURL(url);
+
+//       // Create a link element to trigger the download
+//       const link = document.createElement('a');
+//       link.href = url;
+//       link.setAttribute('download', 'downloaded_video.mp4');
+//       document.body.appendChild(link);
+//       link.click();
+//       document.body.removeChild(link);
+//     } catch (error) {
+//       console.error('Error downloading video:', error);
+//     }
+//   };
+
+//   useEffect(() => {
+//     if (downloadedVideoURL && videoRef.current) {
+//       videoRef.current.src = downloadedVideoURL;
+//       videoRef.current.load();
+//       videoRef.current.play().catch(error => console.error('Error playing video:', error));
+//     }
+//   }, [downloadedVideoURL]);
+
+//   return (
+//     <div className="bg-black h-full">
+//       <Navbar />
+//       <h1 className="mt-10 mb-6 text-center text-white text-3xl">Getting 3D Plots</h1>
+//       <p className="text-center text-white text-lg mt-10">
+//         Upload your walking video to get 3D joint points pin pointed on your body. You can download the video by clicking on the Download Processed Video.Wait for 20 secs after clicking on the upload button.
+//       </p>
+
+//       <div className="relative w-full h-[950px]">
+//         <video autoPlay loop muted id="video" className="w-full h-[400px] mt-20">
+//           <source src={videoF} type="video/mp4" />
+//         </video>
+
+//         <div className="upload bg-black text-white w-full md:h-[1100px] sm:h-[800px] text-white flex flex-col items-center justify-start mt-4">
+//           <form onSubmit={handleSubmit} className="flex flex-col items-center mt-10">
+//             <label htmlFor="video" className="mb-2">Video:</label>
+//             {videoPerc > 0 && <div className="mb-2">{`Uploading: ${videoPerc}% (${streamedBytes} bytes / ${totalBytes} bytes)`}</div>}
+//             <input
+//               type="file"
+//               accept="video/*"
+//               id="video"
+//               onChange={(e) => setVideo(e.target.files[0])}
+//               className="mb-4"
+//             />
+//             <button
+//               type="submit"
+//               className="font-large text-xl hover:scale-110 p-4 hover:bg-[#F1F8FF] rounded-full hover:text-black border-white border-3 mb-4"
+//               style={{ width: '350px' }}
+//             >
+//               Process
+//             </button>
+//           </form>
+//           <button
+//             onClick={handleDownloadAndPlay}
+//             className="font-large text-xl hover:scale-110 p-4 hover:bg-[#F1F8FF] rounded-full hover:text-black border-white border-3"
+//             style={{ width: '350px' }}
+//           >
+//             Download Processed Video
+//           </button>
+//         </div>
+//         <Newsletter />
+//       </div>
+//     </div>
+//   );
+// }
+
+// export default Dplot;
+
+
+
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { getDownloadURL, uploadBytesResumable, ref, getStorage } from "firebase/storage";
@@ -608,6 +765,7 @@ function Dplot() {
   const [streamedBytes, setStreamedBytes] = useState(0);
   const [totalBytes, setTotalBytes] = useState(0);
   const [downloadedVideoURL, setDownloadedVideoURL] = useState("");
+  const [isProcessing, setIsProcessing] = useState(false);
   const videoRef = useRef(null);
 
   useEffect(() => {
@@ -659,12 +817,16 @@ function Dplot() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsProcessing(true);
     try {
       await axios.post(`http://127.0.0.1:5000/api/videos`, { ...inputs });
       console.log('Video uploaded successfully');
     } catch (error) {
       console.log("Error uploading video:", error);
     }
+    setTimeout(() => {
+      setIsProcessing(false);
+    }, 25000);
   };
 
   const handleDownloadAndPlay = async () => {
@@ -704,59 +866,47 @@ function Dplot() {
     <div className="bg-black h-full">
       <Navbar />
       <h1 className="mt-10 mb-6 text-center text-white text-3xl">Getting 3D Plots</h1>
-      <p className="text-center text-white mb-6 text-lg mt-10">
-        Upload your walking video to get 3D joint points pin pointed on your body. You can download the video by clicking on the Download Processed Video.
+      <p className="text-center text-white text-lg mt-10">
+        Upload your walking video to get 3D joint points pin pointed on your body. You can download the video by clicking on the Download Processed Video.Wait for 20 secs after clicking on the upload button.
       </p>
 
       <div className="relative w-full h-[950px]">
-        <video autoPlay loop muted id="video" className="w-full h-[700px] mt-40">
+        <video autoPlay loop muted id="video" className="w-full h-[400px] mt-20">
           <source src={videoF} type="video/mp4" />
         </video>
 
-        <div className="upload bg-black text-white w-full md:h-[1100px] sm:h-[800px] text-white flex flex-col items-center justify-center">
-          <form onSubmit={handleSubmit}>
-            <label htmlFor="video">Video:</label>
-            {videoPerc > 0 && `Uploading: ${videoPerc}% (${streamedBytes} bytes / ${totalBytes} bytes)`}
-            <br />
+        <div className="upload bg-black text-white w-full md:h-[1100px] sm:h-[800px] text-white flex flex-col items-center justify-start mt-4">
+          {isProcessing && <div className="mb-4 text-xl">Processing, please wait...</div>}
+          <form onSubmit={handleSubmit} className="flex flex-col items-center mt-10">
+            <label htmlFor="video" className="mb-2">Video:</label>
+            {videoPerc > 0 && <div className="mb-2">{`Uploading: ${videoPerc}% (${streamedBytes} bytes / ${totalBytes} bytes)`}</div>}
             <input
               type="file"
               accept="video/*"
               id="video"
               onChange={(e) => setVideo(e.target.files[0])}
+              className="mb-4"
             />
-            <br />
             <button
               type="submit"
-              className="font-large texl-3xl hover:scale-110 mt-20 p-4 hover:bg-[#F1F8FF] ml-2 rounded-full hover:text-black border-white border-3"
+              className="font-large text-xl hover:scale-110 p-4 hover:bg-[#F1F8FF] rounded-full hover:text-black border-white border-3 mb-4"
               style={{ width: '350px' }}
             >
-              Upload
+              Process
             </button>
           </form>
-          <br />
           <button
             onClick={handleDownloadAndPlay}
-            className="font-large texl-3xl hover:scale-110 mt-10 p-4 hover:bg-[#F1F8FF] rounded-full hover:text-black border-white border-3"
+            className="font-large text-xl hover:scale-110 p-4 hover:bg-[#F1F8FF] rounded-full hover:text-black border-white border-3"
             style={{ width: '350px' }}
           >
-            Download and Play Processed Video
+            Download Processed Video
           </button>
-          <br />
-          {/* <div className="mt-10">
-            <video controls className="w-full h-auto" ref={videoRef}>
-              <source src={downloadedVideoURL}
-               type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
-          </div> */}
         </div>
-        <Newsletter/>
+        <Newsletter />
       </div>
     </div>
   );
 }
 
 export default Dplot;
-
-
-//https://firebasestorage.googleapis.com/v0/b/gaitguru-backend.appspot.com/o/processed_videos%2Foutput_video.mp4?alt=media&token=429490ca-006a-499f-9116-98d726c47a00
